@@ -1,0 +1,64 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+setClass("read_mmdd")
+setAs("character","read_mmdd", function(from) as.Date(from, format="%m/%d") )
+plot(out[1:65,"daily_deaths"], type="l",col="red")
+lines(web_deaths$daily, col="green")
+
+plot(out[,"ICU_bed_demand"],type="l")
+sum(out[,"ICU_bed_demand"])
+[1] 128342.7
+
+mn_population <- 6000000
+olmsted_population <- 150000
+pct_infected <- .45
+pct_hosp <- .1
+pct_icu <- .01
+ISOdate(2020,3,22) - ISOdate(2020,5,24) = 63 days
+
+web_hosp = read.table("..\\data\\Minnesota\\hospitalizations_0524.txt",sep="\t",col.names=c("Date","ICU_daily","Hospitalized_daily","Total_hospitalizations","Total_ICU_hospitalizations"))
+plot(out[1:65,"prevalent_hospitalizations"], type="l",col="red")
+lines(web_hosp$Hospitalized_daily, col="green")
+
+plot(out[1:65,"ICU_bed_demand"], type="l",col="red")
+lines(web_hosp$ICU_daily, col="green")
+
+```{r}
+COVID_19_Historical_Data_Table <- read_csv("~/R/MyData/Wisconsin/COVID-19_Historical_Data_Table.csv")
+wis <- COVID_19_Historical_Data_Table[which(COVID_19_Historical_Data_Table$NAME=="WI"),]
+
+x = wis$DEATHS
+wis_deaths_daily = diff(x)
+
+mn_deaths = read.table("~/R/MyData/Minnesota/deaths_0524.txt",sep="\t",col.names=c("Date_char","daily","cumulative"))
+```
+```{r}
+plot(out[1:65,"daily_deaths"], type="l",col="red")
+lines(mn_deaths$daily, col="green")
+lines(wis_deaths_daily, col="blue")
+abline(v=29)
+```
+```{r}
+plot(mn_deaths$cumulative, type="l", col= "green")
+lines(wis$DEATHS, type="l", col="blue")
+abline(v=29)
+```
+
