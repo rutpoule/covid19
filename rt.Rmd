@@ -1,0 +1,56 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+```{r}
+url = 'https://covidtracking.com/api/v1/states/daily.csv'
+states = pd.read_csv(url,
+                     usecols=['date', 'state', 'positive'],
+                     parse_dates=['date'],
+                     index_col=['state', 'date'],
+                     squeeze=True).sort_index()
+```
+
+```{r}
+rt <- read.csv("c:/Users/rutpo_000/Documents/Covid19/rt.csv",colClasses=c("Date","factor","numeric","numeric","numeric","numeric","numeric","numeric","numeric"))
+summary(rt)
+```
+
+Merge with mobility data
+```{r}
+mobVrt = merge(mobility,rt)
+summary(mobVrt)
+```
+```{r}
+mn <- mobVrt[mobVrt$region=="MN",]
+summary(mn)
+```
+
+```{r}
+state="WI"
+mn <- mobVrt[mobVrt$region==state,]
+summary(mn)
+plot(mn$date,mn$daily.mean,type="l",col="blue",main=state)
+par(new=TRUE)
+plot(mn$date,mn$mean,type="l",col="red") #rt
+abline(h=1)
+par(new=TRUE)
+plot(mn$date,mn$new_cases,type="l",col="orange")
+```
+```{r}
+par(mfrow = c(50, 1))
+for(state in levels(mobVrt$region)) {
+  plot(mn$date[mobVrt$region == state],mobVrt$mobility[mobVrt$region == state],type="l",col="blue",main=state)
+  par(new=TRUE)
+  plot(mn$date[mobVrt$region == state],mobVrt$mean[mobVrt$region == state],type="l",col="red")
+  abline(h=1)
+  par(new=TRUE)
+  plot(mn$date[mobVrt$region == state],mobVrt$new_cases[mobVrt$region == state],type="l",col="orange")
+}
+
+```
+

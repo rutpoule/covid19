@@ -1,0 +1,40 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Read mobility data
+Maybe use API?
+
+```{r}
+all_mobility <- read.csv("c:/Users/rutpo_000/Documents/Covid19/Global_Mobility_Report.csv",colClasses=c("factor","factor","factor","factor","Date","numeric","numeric","numeric","numeric","numeric","numeric"))
+summary(all_mobility)
+```
+
+Extract US data and add state abbreviations
+```{r}
+us_mobility <- all_mobility[all_mobility$country_region_code=="US" & all_mobility$sub_region_2=="",]
+#rm(all_mobility)
+#abb = read.table("c:/Users/rutpo_000/Documents/Covid19/state_names.tsv",sep="\t")
+us_mobility$region = as.factor(state.abb[match(us_mobility$sub_region_1,state.name)])
+us_mobility$mobility = rowMeans(us_mobility[,c(6,9,10)])
+mobility_3 = us_mobility[,c('date','region','mobility')]
+mobility = mobility_3[complete.cases(mobility_3),]
+summary(mobility)
+```
+
+
+Summaries and Minnesota extraction
+
+```{r}
+mn <- mobility[mobility$sub_region_1=="Minnesota",]
+summary(mn)
+names(mn)
+```
+Calculate the mean of 3 select columns on specific date
+
+```{r}
+on_date <- mn[mn$date==as.Date("2020-05-25"),]
+mean(as.vector(on_date[1,c(6,9,10)],mode="numeric"))
+```
+
